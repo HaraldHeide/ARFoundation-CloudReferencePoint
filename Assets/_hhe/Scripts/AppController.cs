@@ -12,8 +12,6 @@ public class AppController : MonoBehaviour
     public GameObject ResolvedPointPrefab;
     public ARReferencePointManager ReferencePointManager;
     public ARRaycastManager RaycastManager;
-    //public InputField InputField;
-    //public Text OutputText;
     public TMP_InputField InputField;
     public TMP_Text OutputText;
 
@@ -60,13 +58,10 @@ public class AppController : MonoBehaviour
 
                     // Create a reference point at the touch.
                     ARReferencePoint referencePoint =
-                        ReferencePointManager.AddReferencePoint(
-                            hitResults[0].pose);
+                        ReferencePointManager.AddReferencePoint(hitResults[0].pose);
 
                     // Create Cloud Reference Point.
-                    m_CloudReferencePoint =
-                        ReferencePointManager.AddCloudReferencePoint(
-                            referencePoint);
+                    m_CloudReferencePoint = ReferencePointManager.AddCloudReferencePoint(referencePoint);
                     if (m_CloudReferencePoint == null)
                     {
                         OutputText.text = "Create Failed!";
@@ -77,76 +72,72 @@ public class AppController : MonoBehaviour
                     m_AppMode = AppMode.WaitingForHostedReferencePoint;
                 }
             }
-            else if (m_AppMode == AppMode.WaitingForHostedReferencePoint)
+        }
+        else if (m_AppMode == AppMode.WaitingForHostedReferencePoint)
+        {
+            OutputText.text = m_AppMode.ToString();
+
+
+            CloudReferenceState cloudReferenceState =
+                m_CloudReferencePoint.cloudReferenceState;
+            OutputText.text += " - " + cloudReferenceState.ToString();
+
+            if (cloudReferenceState == CloudReferenceState.Success)
             {
-                OutputText.text = m_AppMode.ToString();
+                GameObject cloudAnchor = Instantiate(
+                                             HostedPointPrefab,
+                                             Vector3.zero,
+                                             Quaternion.identity);
+                cloudAnchor.transform.SetParent(
+                    m_CloudReferencePoint.transform, false);
 
-                CloudReferenceState cloudReferenceState =
-                    m_CloudReferencePoint.cloudReferenceState;
-                OutputText.text += " - " + cloudReferenceState.ToString();
+                m_CloudReferenceId = m_CloudReferencePoint.cloudReferenceId;
+                m_CloudReferencePoint = null;
 
-                if (cloudReferenceState == CloudReferenceState.Success)
-                {
-                    GameObject cloudAnchor = Instantiate(
-                                                 HostedPointPrefab,
-                                                 Vector3.zero,
-                                                 Quaternion.identity);
-                    cloudAnchor.transform.SetParent(
-                        m_CloudReferencePoint.transform, false);
-
-                    m_CloudReferenceId = m_CloudReferencePoint.cloudReferenceId;
-                    m_CloudReferencePoint = null;
-
-                    m_AppMode = AppMode.TouchToResolveCloudReferencePoint;
-                }
+                m_AppMode = AppMode.TouchToResolveCloudReferencePoint;
             }
-            else if (m_AppMode == AppMode.TouchToResolveCloudReferencePoint)
+        }
+        else if (m_AppMode == AppMode.TouchToResolveCloudReferencePoint)
+        {
+            OutputText.text = m_CloudReferenceId;
+
+            if (Input.touchCount >= 1
+                && Input.GetTouch(0).phase == TouchPhase.Began
+                && !EventSystem.current.IsPointerOverGameObject(
+                        Input.GetTouch(0).fingerId))
             {
-                OutputText.text = m_CloudReferenceId;
-
-                if (Input.touchCount >= 1
-                    && Input.GetTouch(0).phase == TouchPhase.Began
-                    && !EventSystem.current.IsPointerOverGameObject(
-                            Input.GetTouch(0).fingerId))
+                m_CloudReferencePoint =
+                    ReferencePointManager.ResolveCloudReferenceId(
+                        m_CloudReferenceId);
+                if (m_CloudReferencePoint == null)
                 {
-                    m_CloudReferencePoint =
-                        ReferencePointManager.ResolveCloudReferenceId(
-                            m_CloudReferenceId);
-                    if (m_CloudReferencePoint == null)
-                    {
-                        OutputText.text = "Resolve Failed!";
-                        m_CloudReferenceId = string.Empty;
-                        m_AppMode = AppMode.TouchToHostCloudReferencePoint;
-                        return;
-                    }
-
+                    OutputText.text = "Resolve Failed!";
                     m_CloudReferenceId = string.Empty;
-
-                    // Wait for the reference point to be ready.
-                    m_AppMode = AppMode.WaitingForResolvedReferencePoint;
-                }
-            }
-            else if (m_AppMode == AppMode.WaitingForResolvedReferencePoint)
-            {
-                OutputText.text = m_AppMode.ToString();
-
-                CloudReferenceState cloudReferenceState =
-                    m_CloudReferencePoint.cloudReferenceState;
-                OutputText.text += " - " + cloudReferenceState.ToString();
-
-                if (cloudReferenceState == CloudReferenceState.Success)
-                {
-                    GameObject cloudAnchor = Instantiate(
-                                                 ResolvedPointPrefab,
-                                                 Vector3.zero,
-                                                 Quaternion.identity);
-                    cloudAnchor.transform.SetParent(
-                        m_CloudReferencePoint.transform, false);
-
-                    m_CloudReferencePoint = null;
-
                     m_AppMode = AppMode.TouchToHostCloudReferencePoint;
+                    return;
                 }
+
+                m_CloudReferenceId = string.Empty;
+
+                // Wait for the reference point to be ready.
+                m_AppMode = AppMode.WaitingForResolvedReferencePoint;
+            }
+        }
+        else if (m_AppMode == AppMode.WaitingForResolvedReferencePoint)
+        {
+            OutputText.text = m_AppMode.ToString();
+
+            CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
+            OutputText.text += " - " + cloudReferenceState.ToString();
+
+            if (cloudReferenceState == CloudReferenceState.Success)
+            {
+                GameObject cloudAnchor = Instantiate(ResolvedPointPrefab, Vector3.zero, Quaternion.identity);
+                cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
+
+                m_CloudReferencePoint = null;
+
+                m_AppMode = AppMode.TouchToHostCloudReferencePoint;
             }
         }
     }
@@ -167,5 +158,5 @@ public class AppController : MonoBehaviour
         // Wait for the reference point to be ready.
         m_AppMode = AppMode.WaitingForResolvedReferencePoint;
     }
-    #endregion Privtae Methods
+    #endregion Private Methods
 }
