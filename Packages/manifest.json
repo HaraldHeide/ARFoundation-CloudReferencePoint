@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.google.ar.core.arfoundation.extensions": "file:C:/Users/haral/Downloads/arcore-unity-extensions-1.12.0/package",
+    "com.google.ar.core.arfoundation.extensions": "file:C:/Users/et3654/Downloads/arcore-unity-extensions-1.12.0/arcore-unity-extensions-1.12.0/package",
     "com.unity.collab-proxy": "1.2.16",
     "com.unity.ext.nunit": "1.0.0",
     "com.unity.ide.rider": "1.1.0",
@@ -10,6 +10,9 @@
     "com.unity.textmeshpro": "2.0.1",
     "com.unity.timeline": "1.1.0",
     "com.unity.ugui": "1.0.0",
+    "com.unity.xr.arcore": "2.1.2",
+    "com.unity.xr.arfoundation": "2.1.4",
+    "com.unity.xr.arsubsystems": "2.1.1",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
