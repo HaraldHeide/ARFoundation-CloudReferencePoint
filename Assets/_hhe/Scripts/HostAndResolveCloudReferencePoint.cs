@@ -45,7 +45,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
         {
             m_AppMode = AppMode.TouchToHostCloudReferencePoint;
         }
-
     }
 
     void Update()
@@ -90,6 +89,9 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
 
                 m_CloudReferenceId = m_CloudReferencePoint.cloudReferenceId;
 
+                PhotonPlayersSingleton.Instance.CloudReferencePoindId = m_CloudReferenceId;
+                PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose = m_CloudReferencePoint.pose;
+
                 Message.text = "A CloudReferenceId: " + m_CloudReferenceId.ToString();
                 Message.text += "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
 
@@ -102,37 +104,37 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
         }
         #endregion
         #region Resolving cloudreference point
-        else if (m_AppMode == AppMode.TouchToResolveCloudReferencePoint)
-        {
+        //else if (m_AppMode == AppMode.TouchToResolveCloudReferencePoint)
+        //{
 
-            Message.text = "B CloudReferenceId: " + m_CloudReferenceId.ToString();
-            Message.text += "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
+        //    Message.text = "B CloudReferenceId: " + m_CloudReferenceId.ToString();
+        //    Message.text += "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
 
-            if (Input.touchCount >= 1
-                && Input.GetTouch(0).phase == TouchPhase.Began
-                && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
-            {
-                m_CloudReferencePoint = ReferencePointManager.ResolveCloudReferenceId(m_CloudReferenceId);
-                if (m_CloudReferencePoint == null)
-                {
-                    Message.text = "Resolve Failed!";
-                    m_CloudReferenceId = string.Empty;
-                    m_AppMode = AppMode.TouchToHostCloudReferencePoint;
-                    return;
-                }
+        //    if (Input.touchCount >= 1
+        //        && Input.GetTouch(0).phase == TouchPhase.Began
+        //        && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+        //    {
+        //        m_CloudReferencePoint = ReferencePointManager.ResolveCloudReferenceId(m_CloudReferenceId);
+        //        if (m_CloudReferencePoint == null)
+        //        {
+        //            Message.text = "Resolve Failed!";
+        //            m_CloudReferenceId = string.Empty;
+        //            m_AppMode = AppMode.TouchToHostCloudReferencePoint;
+        //            return;
+        //        }
 
-                this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, m_CloudReferenceId);
+        //        this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, m_CloudReferenceId);
 
 
-                m_CloudReferenceId = string.Empty;
+        //        m_CloudReferenceId = string.Empty;
 
-                // Wait for the reference point to be ready.
-                m_AppMode = AppMode.WaitingForResolvedReferencePoint;
-            }
-        }
+        //        // Wait for the reference point to be ready.
+        //        m_AppMode = AppMode.WaitingForResolvedReferencePoint;
+        //    }
+        //}
         else if (m_AppMode == AppMode.WaitingForResolvedReferencePoint)
         {
-            Message.text = "B CloudReferenceId: " + m_CloudReferenceId.ToString();
+            Message.text = "B CloudReferenceId: " + PhotonPlayersSingleton.Instance.CloudReferencePoindId;
             Message.text += "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
 
             CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
@@ -141,7 +143,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
                 GameObject cloudAnchor = Instantiate(ResolvedPointPrefab, Vector3.zero, Quaternion.identity);
                 cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
                 m_CloudReferencePoint = null;
-                m_AppMode = AppMode.TouchToHostCloudReferencePoint;
+                //m_AppMode = AppMode.TouchToHostCloudReferencePoint;
             }
         }
         #endregion

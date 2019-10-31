@@ -11,11 +11,11 @@ public class AppManagerScript : MonoBehaviour
 
     void Start()
     {
-        Message.text = "AppManagerScript: Start";
+        //Message.text = "AppManagerScript: Start";
 
         if (PhotonNetwork.IsConnectedAndReady)
         {
-            Message.text = "PhotonNetwork IsConnectedAndReady";
+            //Message.text = "PhotonNetwork IsConnectedAndReady";
 
             //Objects to be network instantiated must 
             //be in a Resources folder and contain a PhotonView component
@@ -24,18 +24,13 @@ public class AppManagerScript : MonoBehaviour
                 Vector3 _position = Camera.main.transform.position;
                 Quaternion _rotation = Camera.main.transform.rotation;
                 PhotonNetwork.Instantiate(photonPlayerPrefab.name, _position, _rotation);
-                Message.text = "PhotonPlayerPrefab: " + photonPlayerPrefab.name;
-                Message.text = "AppManagerScript: End OK";
+                //Message.text = "PhotonPlayerPrefab: " + photonPlayerPrefab.name;
+                //Message.text = "AppManagerScript: End OK";
             }
-            else
-            {
-                Message.text = "Error: PlayerPrefab not instanciated!";
-            }
+            //else
+            //{
+            //    Message.text = "Error: PlayerPrefab not instanciated!";
+            //}
         }
-    }
-
-    private void Update()
-    {
-        //Message.text = "Camera Position: " + Camera.main.transform.position;
     }
 }

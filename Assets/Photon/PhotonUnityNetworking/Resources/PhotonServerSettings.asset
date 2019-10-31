@@ -35,5 +35,6 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - Set_CloudReferenceId
+  - Send_My_Position
   DisableAutoOpenWizard: 1
   ShowSettings: 0

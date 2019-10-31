@@ -36,7 +36,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.13894}
+  m_AnchoredPosition: {x: 0, y: 0.2}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &1309115204342308625
@@ -267,7 +267,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerName: {fileID: 5422056639886590821}
-  mePrefabs: []
+  mePrefabs:
+  - {fileID: 5004855027591672302, guid: 163f24a12afd98f4c99a6fb45040957e, type: 3}
   otherPrefabs: []
 --- !u!114 &1574196044815598874
 MonoBehaviour:
