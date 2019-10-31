@@ -269,7 +269,8 @@ MonoBehaviour:
   PlayerName: {fileID: 5422056639886590821}
   mePrefabs:
   - {fileID: 5004855027591672302, guid: 163f24a12afd98f4c99a6fb45040957e, type: 3}
-  otherPrefabs: []
+  otherPrefabs:
+  - {fileID: 5004855027591672302, guid: de63cd20828b91b4cac92d58cfe6a085, type: 3}
 --- !u!114 &1574196044815598874
 MonoBehaviour:
   m_ObjectHideFlags: 0

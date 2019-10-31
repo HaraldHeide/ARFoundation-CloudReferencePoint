@@ -90,10 +90,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
                 m_CloudReferenceId = m_CloudReferencePoint.cloudReferenceId;
 
                 PhotonPlayersSingleton.Instance.CloudReferencePoindId = m_CloudReferenceId;
-                PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose = m_CloudReferencePoint.pose;
-
-                Message.text = "A CloudReferenceId: " + m_CloudReferenceId.ToString();
-                Message.text += "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
 
                 m_CloudReferencePoint = null;
 
@@ -134,15 +130,19 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
         //}
         else if (m_AppMode == AppMode.WaitingForResolvedReferencePoint)
         {
-            Message.text = "B CloudReferenceId: " + PhotonPlayersSingleton.Instance.CloudReferencePoindId;
-            Message.text += "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
-
             CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
             if (cloudReferenceState == CloudReferenceState.Success)
             {
+                //Message.text = "B CloudReferenceId: " + PhotonPlayersSingleton.Instance.CloudReferencePoindId +
+                //    "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
+
                 GameObject cloudAnchor = Instantiate(ResolvedPointPrefab, Vector3.zero, Quaternion.identity);
                 cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
+
+                PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose = m_CloudReferencePoint.pose;
+
                 m_CloudReferencePoint = null;
+
                 //m_AppMode = AppMode.TouchToHostCloudReferencePoint;
             }
         }

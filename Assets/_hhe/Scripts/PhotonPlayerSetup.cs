@@ -60,6 +60,7 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
+            #region Sharing my own position
             if (Vector3.Distance(_Camera.position, this.transform.position) > 0.5f)
             {
                 Pose pose1 = new Pose(Vector3.zero, Quaternion.identity); //Local Origo
@@ -69,6 +70,9 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
                 Pose poseNew = PhotonPlayersSingleton.Instance.GetNewPoseGameObject(pose1, pose2, pose3);
                 this.photonView.RPC("Send_My_Position", RpcTarget.AllBuffered, poseNew);
             }
+            #endregion
+
+            #region Getting other Players position
             if(CheckOthersPositionTimer < CheckOthersPositionInterval)
             {
                 CheckOthersPositionTimer += Time.deltaTime;
@@ -100,6 +104,7 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
                     }
                 }
             }
+            #endregion
         }
     }
 

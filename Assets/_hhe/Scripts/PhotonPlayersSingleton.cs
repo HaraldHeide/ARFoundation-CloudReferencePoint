@@ -21,11 +21,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using TMPro;
 
 //Insert or update local player position (Pose based on commoncloudreferencepoint as origo)
 public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSingleton>
 {
+    public TMP_Text Message;
+
+    public void Start()
+    {
+        Message = GameObject.Find("Message").GetComponent<TMP_Text>();
+    }
+
+    private void Update()
+    {
+        Message.text = "PhotonPlayersSingleton: " + CloudReferencePoindId +
+            "\nCloudReferencePose: " + LocalPlayerCloudReferencePose;
+    }
+
     public string CloudReferencePoindId = "";
     public Pose LocalPlayerCloudReferencePose = new Pose();
 
