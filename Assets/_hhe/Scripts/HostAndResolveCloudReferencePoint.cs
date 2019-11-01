@@ -91,11 +91,12 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
 
                 PhotonPlayersSingleton.Instance.CloudReferencePoindId = m_CloudReferenceId;
 
-                m_CloudReferencePoint = null;
+                //m_CloudReferencePoint = null;
 
                 //m_AppMode = AppMode.TouchToResolveCloudReferencePoint;
 
-                this.photonView.RPC("Set_CloudReferenceId", RpcTarget.AllBuffered, m_CloudReferenceId);
+                this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, m_CloudReferenceId);
+                m_AppMode = AppMode.WaitingForResolvedReferencePoint;
             }
         }
         #endregion

@@ -4,10 +4,10 @@ using TMPro;
 public class AppManagerScript : MonoBehaviour
 {
     [SerializeField]
-    private GameObject photonPlayerPrefab;
+    private TMP_Text Message;
 
     [SerializeField]
-    private TMP_Text Message;
+    private GameObject photonPlayerPrefab;
 
     void Start()
     {

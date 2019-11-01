@@ -10,12 +10,27 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     private TMP_Text Message;
+    [SerializeField]
+    private TMP_InputField playerName;
 
     void Start()
     {
-        PhotonNetwork.ConnectUsingSettings();
+        playerName.onEndEdit.AddListener(OnLoginButtonClicked);
     }
 
+    public void OnLoginButtonClicked(string text)
+    {
+        if(!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
+    }
+
+    public override void OnDisable()
+    {
+        playerName.onEndEdit.RemoveListener(OnLoginButtonClicked);
+    }
+        
     #region PUN2 CallBacks
     public override void OnConnected()  // Has reached internett
     {
@@ -43,13 +58,16 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.PlayerList.Length > 1)
         {
             PhotonNetwork.LocalPlayer.NickName = "Black";
-            StartCoroutine(SpawnMyPlayer());
+            StartCoroutine(SpawnMyPlayer1());
         }
         else
         {
             PhotonNetwork.LocalPlayer.NickName = "White";
             StartCoroutine(SpawnMyPlayer2());
         }
+
+        PhotonNetwork.LocalPlayer.NickName = playerName.text;
+
         Message.text = PhotonNetwork.LocalPlayer.NickName + " Joined Room " + PhotonNetwork.CurrentRoom.Name +
                 " now containing " + PhotonNetwork.CountOfPlayers.ToString();
 
@@ -73,7 +91,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     #endregion
 
-    IEnumerator SpawnMyPlayer()
+    IEnumerator SpawnMyPlayer1()
     {
         yield return new WaitForSeconds(1f);
     }
