@@ -35,8 +35,8 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
     private void Update()
     {
-        Message.text = "PhotonPlayersSingleton: " + CloudReferencePoindId +
-            "\nCloudReferencePose: " + LocalPlayerCloudReferencePose;
+        //Message.text = "PhotonPlayersSingleton: " + CloudReferencePoindId +
+        //    "\nCloudReferencePose: " + LocalPlayerCloudReferencePose;
     }
 
     public string CloudReferencePoindId = "";

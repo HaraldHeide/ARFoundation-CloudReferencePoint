@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using TMPro;
 using Photon.Pun;
+using System.Collections;
+using System;
 
 public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
 {
@@ -28,6 +30,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
 
         // Poll resolving point state until it is ready to use.
         WaitingForResolvedReferencePoint,
+
     }
 
     //private AppMode m_AppMode = AppMode.TouchToHostCloudReferencePoint;
@@ -38,6 +41,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
     void Start()
     {
         Message = GameObject.Find("Message").GetComponent<TMP_Text>();
+
         ReferencePointManager = GameObject.Find("AR Session Origin").GetComponent<ARReferencePointManager>();
         RaycastManager = GameObject.Find("AR Session Origin").GetComponent<ARRaycastManager>();
 
@@ -45,6 +49,16 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
         {
             m_AppMode = AppMode.TouchToHostCloudReferencePoint;
         }
+    }
+
+    IEnumerator WaitingForCloudReferencePointId()
+    {
+        while(PhotonPlayersSingleton.Instance.CloudReferencePoindId == null || PhotonPlayersSingleton.Instance.CloudReferencePoindId == "")
+        {
+
+        }
+        ResolveCloudReferencePoint(PhotonPlayersSingleton.Instance.CloudReferencePoindId);
+        yield break;
     }
 
     void Update()
@@ -87,7 +101,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
                 GameObject cloudAnchor = Instantiate(HostedPointPrefab, Vector3.zero, Quaternion.identity);
                 cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
 
-                m_CloudReferenceId = m_CloudReferencePoint.cloudReferenceId;
+                m_CloudReferenceId = m_CloudReferencePoint.cloudReferenceId;  // Getting cloud id to share with Others
 
                 PhotonPlayersSingleton.Instance.CloudReferencePoindId = m_CloudReferenceId;
 
@@ -100,7 +114,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
             }
         }
         #endregion
-        #region Resolving cloudreference point
+        #region Removed
         //else if (m_AppMode == AppMode.TouchToResolveCloudReferencePoint)
         //{
 
@@ -129,6 +143,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
         //        m_AppMode = AppMode.WaitingForResolvedReferencePoint;
         //    }
         //}
+        #endregion
+        #region Resolving cloudreference point
         else if (m_AppMode == AppMode.WaitingForResolvedReferencePoint)
         {
             CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
@@ -174,4 +190,20 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
         m_AppMode = AppMode.WaitingForResolvedReferencePoint;
     }
     #endregion Private Methods
+
+    IEnumerator Wait(string message, float seconds)
+    {
+        Message.text = message;
+        yield return new WaitForSeconds(seconds);
+    }
+
+    void MyDelay(double seconds)
+    {
+        DateTime ts = DateTime.Now.Add(TimeSpan.FromSeconds(seconds));
+
+        while (DateTime.Now < ts)
+        {
+
+        }
+    }
 }

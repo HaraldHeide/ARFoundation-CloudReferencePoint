@@ -19,18 +19,16 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
     void Start()
     {
         Message = GameObject.Find("Message").GetComponent<TMP_Text>();
-        Message.text = "PhotonPlayerSetup: Start";
+        //Message.text = "PhotonPlayerSetup: Start";
 
         _Camera = Camera.main.transform;
 
         if (photonView.IsMine)
         {
-            Message.text = "PhotonView.IsMine";
+            //Message.text = "PhotonView.IsMine";
             foreach (GameObject gameObject in mePrefabs)
             {
                 gameObject.SetActive(true);
-                Message.text = "gameObject.SetActive";
-
             }
             foreach (GameObject gameObject in otherPrefabs)
             {
@@ -39,8 +37,7 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
         }
         else
         {
-            Message.text = "PhotonView.NotMine";
-
+            //Message.text = "PhotonView.NotMine";
             foreach (GameObject gameObject in mePrefabs)
             {
                 gameObject.SetActive(false);
@@ -61,7 +58,7 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             #region Sharing my own position
-            if (Vector3.Distance(_Camera.position, this.transform.position) > 0.5f)
+            if (Vector3.Distance(_Camera.position, this.transform.position) > 0.05f)
             {
                 Pose pose1 = new Pose(Vector3.zero, Quaternion.identity); //Local Origo
                 Pose pose2 = PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose; // localCommonCloudReferencePose
