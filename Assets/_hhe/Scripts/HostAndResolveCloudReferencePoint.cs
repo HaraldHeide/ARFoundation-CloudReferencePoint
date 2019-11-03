@@ -8,8 +8,9 @@ using TMPro;
 using Photon.Pun;
 using System.Collections;
 using System;
+using Photon.Realtime;
 
-public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
+public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 {
     public GameObject HostedPointPrefab;
     public GameObject ResolvedPointPrefab;
@@ -26,7 +27,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
         WaitingForHostedReferencePoint,
 
         // Wait for user to tap screen to begin resolving the point.
-        TouchToResolveCloudReferencePoint,
+        ResolveCloudReferencePoint,
 
         // Poll resolving point state until it is ready to use.
         WaitingForResolvedReferencePoint,
@@ -43,22 +44,18 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
         Message = GameObject.Find("Message").GetComponent<TMP_Text>();
 
         ReferencePointManager = GameObject.Find("AR Session Origin").GetComponent<ARReferencePointManager>();
-        RaycastManager = GameObject.Find("AR Session Origin").GetComponent<ARRaycastManager>();
 
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
+            Message.text = "IsMasterClient";
+            RaycastManager = GameObject.Find("AR Session Origin").GetComponent<ARRaycastManager>();
+
             m_AppMode = AppMode.TouchToHostCloudReferencePoint;
         }
-    }
-
-    IEnumerator WaitingForCloudReferencePointId()
-    {
-        while(PhotonPlayersSingleton.Instance.CloudReferencePoindId == null || PhotonPlayersSingleton.Instance.CloudReferencePoindId == "")
+        else
         {
-
+            Message.text = "Not IsMasterClient";
         }
-        ResolveCloudReferencePoint(PhotonPlayersSingleton.Instance.CloudReferencePoindId);
-        yield break;
     }
 
     void Update()
@@ -114,36 +111,27 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
             }
         }
         #endregion
-        #region Removed
-        //else if (m_AppMode == AppMode.TouchToResolveCloudReferencePoint)
-        //{
 
-        //    Message.text = "B CloudReferenceId: " + m_CloudReferenceId.ToString();
-        //    Message.text += "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
-
-        //    if (Input.touchCount >= 1
-        //        && Input.GetTouch(0).phase == TouchPhase.Began
-        //        && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
-        //    {
-        //        m_CloudReferencePoint = ReferencePointManager.ResolveCloudReferenceId(m_CloudReferenceId);
-        //        if (m_CloudReferencePoint == null)
-        //        {
-        //            Message.text = "Resolve Failed!";
-        //            m_CloudReferenceId = string.Empty;
-        //            m_AppMode = AppMode.TouchToHostCloudReferencePoint;
-        //            return;
-        //        }
-
-        //        this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, m_CloudReferenceId);
+        #region Waiting for CloudReferencePointId
+        else if (m_AppMode == AppMode.ResolveCloudReferencePoint && PhotonPlayersSingleton.Instance.CloudReferencePoindId != "" && PhotonPlayersSingleton.Instance.CloudReferencePoindId != null)
+        {
+            Message.text = "Waiting for cloudrefpoint: " + PhotonPlayersSingleton.Instance.CloudReferencePoindId;
 
 
-        //        m_CloudReferenceId = string.Empty;
+            m_CloudReferenceId = string.Empty;
 
-        //        // Wait for the reference point to be ready.
-        //        m_AppMode = AppMode.WaitingForResolvedReferencePoint;
-        //    }
-        //}
-        #endregion
+            m_CloudReferencePoint = ReferencePointManager.ResolveCloudReferenceId(PhotonPlayersSingleton.Instance.CloudReferencePoindId);
+            if (m_CloudReferencePoint == null)
+            {
+                Message.text = "Resolve Failed!";
+                //m_AppMode = AppMode.TouchToHostCloudReferencePoint;
+                return;
+            }
+
+            m_AppMode = AppMode.WaitingForResolvedReferencePoint;
+        }
+        #endregion Waiting for CloudReferencePoint
+
         #region Resolving cloudreference point
         else if (m_AppMode == AppMode.WaitingForResolvedReferencePoint)
         {
@@ -170,40 +158,21 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPun
     [PunRPC]
     void Set_CloudReferenceId(string id)
     {
-        ResolveCloudReferencePoint(id);
+        Message.text = "Refid: " + PhotonPlayersSingleton.Instance.CloudReferencePoindId;
+        if (PhotonPlayersSingleton.Instance.CloudReferencePoindId == "" || PhotonPlayersSingleton.Instance.CloudReferencePoindId == null)
+        {
+            PhotonPlayersSingleton.Instance.CloudReferencePoindId = id;
+            m_AppMode = AppMode.ResolveCloudReferencePoint;
+        }
     }
     #endregion Photon RPC
 
-    #region Private Methods
-    private void ResolveCloudReferencePoint(string text)
+    public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        m_CloudReferenceId = string.Empty;
-
-        m_CloudReferencePoint = ReferencePointManager.ResolveCloudReferenceId(text);
-        if (m_CloudReferencePoint == null)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            Message.text = "Resolve Failed!";
-            m_AppMode = AppMode.TouchToHostCloudReferencePoint;
-            return;
+            this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, m_CloudReferenceId);
         }
-        // Wait for the reference point to be ready.
-        m_AppMode = AppMode.WaitingForResolvedReferencePoint;
-    }
-    #endregion Private Methods
 
-    IEnumerator Wait(string message, float seconds)
-    {
-        Message.text = message;
-        yield return new WaitForSeconds(seconds);
-    }
-
-    void MyDelay(double seconds)
-    {
-        DateTime ts = DateTime.Now.Add(TimeSpan.FromSeconds(seconds));
-
-        while (DateTime.Now < ts)
-        {
-
-        }
     }
 }
