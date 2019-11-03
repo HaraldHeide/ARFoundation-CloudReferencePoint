@@ -97,7 +97,6 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
                         float step =  Time.deltaTime; // calculate distance to move
                         w1.transform.position = Vector3.MoveTowards(transform.position, position, step);
                         w1.transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, step);
-
                     }
                 }
             }

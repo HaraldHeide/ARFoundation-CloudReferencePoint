@@ -28,6 +28,12 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 {
     public TMP_Text Message;
 
+    public string CloudReferencePoindId = "";
+    public Pose LocalPlayerCloudReferencePose = new Pose();
+
+    public List<string> namePhotonPlayers = new List<string>();
+    public List<Pose> posePhotonPlayers = new List<Pose>();
+
     public void Start()
     {
         Message = GameObject.Find("Message").GetComponent<TMP_Text>();
@@ -35,15 +41,10 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
     private void Update()
     {
-        //Message.text = "PhotonPlayersSingleton: " + CloudReferencePoindId +
-        //    "\nCloudReferencePose: " + LocalPlayerCloudReferencePose;
+        //Message.text = "PhotonPlayersSingleton: " + CloudReferencePoindId;
+        Message.text = "CloudReferencePose: " + LocalPlayerCloudReferencePose +
+            " Nickname: " + namePhotonPlayers.Count;
     }
-
-    public string CloudReferencePoindId = "";
-    public Pose LocalPlayerCloudReferencePose = new Pose();
-
-    public List<string> namePhotonPlayers = new List<string>();
-    public List<Pose> posePhotonPlayers = new List<Pose>();
 
     public void Update_Local_Player_Pose(string nickName, Pose pose)
     {

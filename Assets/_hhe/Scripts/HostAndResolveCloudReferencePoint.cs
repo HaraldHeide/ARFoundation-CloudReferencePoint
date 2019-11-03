@@ -32,6 +32,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         // Poll resolving point state until it is ready to use.
         WaitingForResolvedReferencePoint,
 
+        // Poll resolving point state until it is ready to use.
+        Finished,
     }
 
     //private AppMode m_AppMode = AppMode.TouchToHostCloudReferencePoint;
@@ -124,7 +126,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
             if (m_CloudReferencePoint == null)
             {
                 Message.text = "Resolve Failed!";
-                //m_AppMode = AppMode.TouchToHostCloudReferencePoint;
                 return;
             }
 
@@ -146,9 +147,9 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 
                 PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose = m_CloudReferencePoint.pose;
 
-                m_CloudReferencePoint = null;
+                //m_CloudReferencePoint = null;
 
-                //m_AppMode = AppMode.TouchToHostCloudReferencePoint;
+                m_AppMode = AppMode.Finished;
             }
         }
         #endregion
@@ -167,12 +168,13 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     }
     #endregion Photon RPC
 
+    #region Photon Callback
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, m_CloudReferenceId);
         }
-
     }
+    #endregion
 }
