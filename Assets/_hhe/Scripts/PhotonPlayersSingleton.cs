@@ -41,13 +41,22 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
     private void Update()
     {
-        //Message.text = "PhotonPlayersSingleton: " + CloudReferencePoindId;
-        Message.text = "CloudReferencePose: " + LocalPlayerCloudReferencePose +
-            " Nickname: " + namePhotonPlayers.Count;
+        Message.text = "PhotonPlayersSingleton: " + CloudReferencePoindId;
+        Message.text = "CloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
+        Message.text += " CloudReferenceRotation: " + LocalPlayerCloudReferencePose.rotation.eulerAngles;
+        Message.text += " Count: " + namePhotonPlayers.Count;
+
+        for (int i = 0; i < namePhotonPlayers.Count; i++)
+        {
+            Message.text += "\nName" + i + ": " + namePhotonPlayers[i];
+            Message.text += " Pos: " + posePhotonPlayers[i].position;
+            Message.text += " Rot: " + posePhotonPlayers[i].rotation.eulerAngles;
+        }
     }
 
-    public void Update_Local_Player_Pose(string nickName, Pose pose)
+    public void Update_Local_Player_Pose(string nickName, Vector3 pos, Quaternion rot)
     {
+        Pose pose = new Pose(pos, rot);
         if (namePhotonPlayers.Contains(nickName))
         {
             int i = namePhotonPlayers.IndexOf(nickName);
