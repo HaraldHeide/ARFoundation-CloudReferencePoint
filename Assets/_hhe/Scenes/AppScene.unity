@@ -880,9 +880,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4ef183a120f490478c05329e47f269d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Message: {fileID: 610118485}
   photonPlayerPrefab: {fileID: 4930282048853442204, guid: f29fb3ea9173bcb4bbaff51d0b1e51a9,
     type: 3}
-  Message: {fileID: 610118485}
 --- !u!4 &1486255000
 Transform:
   m_ObjectHideFlags: 0

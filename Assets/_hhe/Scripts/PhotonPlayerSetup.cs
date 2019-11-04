@@ -64,42 +64,45 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
                 Pose pose2 = PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose; // localCommonCloudReferencePose
                 Pose pose3 = new Pose(_Camera.position, _Camera.rotation);
                 Pose poseNew = PhotonPlayersSingleton.Instance.GetNewPoseGameObject(pose1, pose2, pose3);
+
                 this.photonView.RPC("Send_My_Position", RpcTarget.OthersBuffered, poseNew.position, poseNew.rotation);
 
             }
             #endregion
 
             #region Getting other Players position
-            //if(CheckOthersPositionTimer < CheckOthersPositionInterval)
-            //{
-            //    CheckOthersPositionTimer += Time.deltaTime;
-            //}
-            //else
-            //{
-            //    CheckOthersPositionTimer = 0.0f;
+            if (CheckOthersPositionTimer < CheckOthersPositionInterval)
+            {
+                CheckOthersPositionTimer += Time.deltaTime;
+            }
+            else
+            {
+                CheckOthersPositionTimer = 0.0f;
 
-            //    //Find other players.
-            //    for (int i = 0; i < PhotonPlayersSingleton.Instance.CloudReferencePoindId.Length - 1; i++)
-            //    {
-            //        Vector3 position = PhotonPlayersSingleton.Instance.posePhotonPlayers[i].position;
-            //        position += PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose.position;
-            //        Quaternion rotation = PhotonPlayersSingleton.Instance.posePhotonPlayers[i].rotation;
-            //        rotation *= PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose.rotation;
-            //        string name = PhotonPlayersSingleton.Instance.namePhotonPlayers[i];
-            //        GameObject w1 = GameObject.Find(name);
-            //        if (w1 == null)
-            //        {
-            //            GameObject w = (GameObject)Instantiate(otherPrefabs[0], position, rotation);
-            //            w.name = name;
-            //        }
-            //        else
-            //        {
-            //            float step =  Time.deltaTime; // calculate distance to move
-            //            w1.transform.position = Vector3.MoveTowards(transform.position, position, step);
-            //            w1.transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, step);
-            //        }
-            //    }
-            //}
+                //Find other players.
+                for (int i = 0; i < PhotonPlayersSingleton.Instance.CloudReferencePoindId.Length - 1; i++)
+                {
+                    Vector3 position = PhotonPlayersSingleton.Instance.posePhotonPlayers[i].position;
+                    position += PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose.position;
+                    Quaternion rotation = PhotonPlayersSingleton.Instance.posePhotonPlayers[i].rotation;
+                    rotation *= PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose.rotation;
+                    string name = PhotonPlayersSingleton.Instance.namePhotonPlayers[i];
+
+
+                    GameObject w = GameObject.Find(name);
+                    if (w == null)
+                    {
+                        GameObject wt = (GameObject)Instantiate(otherPrefabs[0], position, rotation);
+                        w.name = name;
+                    }
+                    else
+                    {
+                        float step = Time.deltaTime; // calculate distance to move
+                        w.transform.position = Vector3.MoveTowards(transform.position, position, step);
+                        w.transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, step);
+                    }
+                }
+            }
             #endregion
         }
     }
@@ -109,4 +112,28 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
     {
         PhotonPlayersSingleton.Instance.Update_Local_Player_Pose(photonView.Owner.NickName, pos, rot);
     }
+
+
+    //public GameObject TextPrefab;
+
+    //string NickName = "Harald";
+    //void Start()
+    //{
+    //}
+    //private void Update()
+    //{
+    //    GameObject W = GameObject.Find(NickName);
+    //    if (W == null)
+    //    {
+    //        GameObject testPrefab = Instantiate(TextPrefab);
+    //        TextMeshPro textMesh = testPrefab.GetComponent<TextMeshPro>();
+    //        textMesh.text = NickName;
+    //        textMesh.name = NickName;
+    //    }
+    //    else
+    //    {
+    //        W.transform.Translate(Vector3.left * Time.deltaTime, Space.World);
+    //    }
+    //}
+
 }
