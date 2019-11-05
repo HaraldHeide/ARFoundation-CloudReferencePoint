@@ -28,7 +28,7 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 {
     public TMP_Text Message;
 
-    public string CloudReferencePoindId = "";
+    public string CloudReferencePointId = "";
     public Pose LocalPlayerCloudReferencePose = new Pose();
 
     public List<string> namePhotonPlayers = new List<string>();
@@ -41,17 +41,17 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
     private void Update()
     {
-        Message.text = "PhotonPlayersSingleton: " + CloudReferencePoindId;
-        Message.text = "CloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
-        Message.text += " CloudReferenceRotation: " + LocalPlayerCloudReferencePose.rotation.eulerAngles;
-        Message.text += " Count: " + namePhotonPlayers.Count;
+        //Message.text = "PhotonPlayersSingleton: " + CloudReferencePointId;
+        //Message.text = "CloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
+        //Message.text += " CloudReferenceRotation: " + LocalPlayerCloudReferencePose.rotation.eulerAngles;
+        //Message.text += " Count: " + namePhotonPlayers.Count;
 
-        for (int i = 0; i < namePhotonPlayers.Count; i++)
-        {
-            Message.text += "\nName" + i + ": " + namePhotonPlayers[i];
-            Message.text += " Pos: " + posePhotonPlayers[i].position;
-            Message.text += " Rot: " + posePhotonPlayers[i].rotation.eulerAngles;
-        }
+        //for (int i = 0; i < namePhotonPlayers.Count; i++)
+        //{
+        //    Message.text += "\nName[" + i + "]: " + namePhotonPlayers[i];
+        //    Message.text += " Pos: " + posePhotonPlayers[i].position;
+        //    Message.text += " Rot: " + posePhotonPlayers[i].rotation.eulerAngles;
+        //}
     }
 
     public void Update_Local_Player_Pose(string nickName, Vector3 pos, Quaternion rot)
@@ -68,7 +68,6 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
             posePhotonPlayers.Add(pose);
         }
     }
-
 
     //Change coordinate system for Object
     public Pose GetNewPoseGameObject(Pose OriginalOrigoPose, Pose NewOrigo, Pose OriginalGameObjectPose)
@@ -93,5 +92,4 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
         return newPose;
     }
-
 }
