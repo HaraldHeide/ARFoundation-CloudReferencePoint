@@ -4,22 +4,17 @@ using TMPro;
 
 public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
 {
-    //[SerializeField]
-    //private TMP_Text PlayerName;
-
     public GameObject photonPlayerNamePrefab;
 
     private Transform _Camera;
     private TMP_Text Message;
 
-    private float CheckOthersPositionInterval = 0.1f;
+    private float CheckOthersPositionInterval = 1.0f;
     private float CheckOthersPositionTimer;
 
     void Start()
     {
         Message = GameObject.Find("Message").GetComponent<TMP_Text>();
-        //Message.text = "PhotonPlayerSetup: Start";
-
         _Camera = Camera.main.transform;
     }
 
@@ -29,23 +24,23 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
         {
             #region Sharing my own position
             // Changing localplayers pose coordinates from being based on ARFoundation Origo to being based on CloudReferencePoint.
-            //if (Vector3.Distance(_Camera.position, this.transform.position) > 0.02f)
+            if (Vector3.Distance(_Camera.position, this.transform.position) > 0.03f)
             {
                 Pose pose1 = new Pose(Vector3.zero, Quaternion.identity); //Local Origo
                 Pose pose2 = PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose; // localCommonCloudReferencePose
                 Pose pose3 = new Pose(_Camera.position, _Camera.rotation);
                 Pose poseNew = PhotonPlayersSingleton.Instance.GetNewPoseGameObject(pose1, pose2, pose3);
 
-                this.photonView.RPC("Send_My_Position", RpcTarget.AllBuffered, poseNew.position, poseNew.rotation);
+                this.photonView.RPC("Send_My_Position", RpcTarget.OthersBuffered, poseNew.position, poseNew.rotation);
             }
             #endregion
 
             #region Getting other Players position
-            //if (CheckOthersPositionTimer < CheckOthersPositionInterval)
-            //{
-            //    CheckOthersPositionTimer += Time.deltaTime;
-            //}
-            //else
+            if (CheckOthersPositionTimer < CheckOthersPositionInterval)
+            {
+                CheckOthersPositionTimer += Time.deltaTime;
+            }
+            else
             {
                 CheckOthersPositionTimer = 0.0f;
 
@@ -59,23 +54,18 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
                     Pose pose3 = PhotonPlayersSingleton.Instance.posePhotonPlayers[i];
                     Pose poseNew = PhotonPlayersSingleton.Instance.GetNewPoseGameObject(pose1, pose2, pose3);
 
-                    Vector3 position = poseNew.position;
-                    Quaternion rotation = poseNew.rotation;
+                    Vector3 positionNew = poseNew.position;
+                    Quaternion rotationNew = poseNew.rotation;
                     string name = PhotonPlayersSingleton.Instance.namePhotonPlayers[i];
-
-                    //position = position - (Vector3.up * 10);  //Kun test
 
                     GameObject w = GameObject.Find(name);
                     if (w == null)
                     {
-                        w = Instantiate(photonPlayerNamePrefab, position, rotation);
-                        Message.text = "testPrefab Name: " + w.name + " Position" + "[" + i + "]: " + position;
-
-                        TextMeshPro textMesh = w.GetComponent<TextMeshPro>();
+                        w = Instantiate(photonPlayerNamePrefab, positionNew, rotationNew);
+                        TextMeshPro textMesh = w.GetComponentInChildren<TextMeshPro>();
                         textMesh.text = name;
                         textMesh.name = name;
                         w.name = name;
-                        //Message.text = "Instantiate Name: " + name + " Position" + "[" + i + "]: " + position;
                     }
                     else
                     {
@@ -83,9 +73,10 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
                         //w.transform.position = Vector3.MoveTowards(transform.position, position, step);
                         //w.transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, step);
                         //w.transform.Translate(position + Vector3.left);
-                        w.transform.position = position;
-                        w.transform.rotation =  rotation;
-                        //Message.text = "Name: " + w.name + " Position" + "[" + i + "]: " + position;
+                        w.transform.position = positionNew;
+                        w.transform.rotation =  rotationNew;
+                        Message.text = "Position" + "[" + i + "]: " + positionNew;
+                        Message.text += "\nw pos" + "[" + i + "]: " + w.transform.position;
                     }
                 }
             }
