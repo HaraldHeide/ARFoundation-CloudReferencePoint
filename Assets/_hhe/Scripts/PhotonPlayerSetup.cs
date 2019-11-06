@@ -80,13 +80,18 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
                 //Find other players.
                 for (int i = 0; i < PhotonPlayersSingleton.Instance.CloudReferencePointId.Length; i++)
                 {
-                    Vector3 position = PhotonPlayersSingleton.Instance.posePhotonPlayers[i].position;
-                    position -= PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose.position;
-                    Quaternion rotation = PhotonPlayersSingleton.Instance.posePhotonPlayers[i].rotation;
-                    rotation *= PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose.rotation;
+
+                    Pose pose1 = PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose;
+                    Pose pose2 = PhotonPlayersSingleton.Instance.poseCloudReference[i];
+                    Pose pose3 = PhotonPlayersSingleton.Instance.posePhotonPlayers[i];
+                    Pose poseNew = PhotonPlayersSingleton.Instance.GetNewPoseGameObject(pose1, pose2, pose3);
+
+
+                    Vector3 position = poseNew.position;
+                    Quaternion rotation = poseNew.rotation;
                     string name = PhotonPlayersSingleton.Instance.namePhotonPlayers[i];
 
-                    //position = position - (Vector3.up * 10);  //Kun test
+                    position = position - (Vector3.up * 10);  //Kun test
 
                     GameObject w = GameObject.Find(name);
                     if (w == null)
@@ -114,6 +119,8 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
     [PunRPC]
     private void Send_My_Position(Vector3 pos, Quaternion rot)
     {
-        PhotonPlayersSingleton.Instance.Update_Local_Player_Pose(photonView.Owner.NickName, pos, rot);
+        PhotonPlayersSingleton.Instance.Update_Local_Player_Pose(photonView.Owner.NickName, pos, rot,
+                                            PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose.position, 
+                                            PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose.rotation);
     }
 }

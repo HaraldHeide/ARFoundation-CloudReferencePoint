@@ -33,6 +33,7 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
     public List<string> namePhotonPlayers = new List<string>();
     public List<Pose> posePhotonPlayers = new List<Pose>();
+    public List<Pose> poseCloudReference = new List<Pose>();
 
     public void Start()
     {
@@ -54,18 +55,20 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
         //}
     }
 
-    public void Update_Local_Player_Pose(string nickName, Vector3 pos, Quaternion rot)
+    public void Update_Local_Player_Pose(string nickName, Vector3 _PosPlayer, Quaternion _RotPlayer, Vector3 _PosCloudReference, Quaternion _RotCloudReference)
     {
-        Pose pose = new Pose(pos, rot);
+        Pose _PosePlayer = new Pose(_PosPlayer, _RotPlayer);
+        Pose _PoseCloudReference = new Pose(_PosCloudReference, _RotCloudReference);
         if (namePhotonPlayers.Contains(nickName))
         {
             int i = namePhotonPlayers.IndexOf(nickName);
-            posePhotonPlayers[i] = pose;
+            posePhotonPlayers[i] = _PosePlayer;
         }
         else
         {
             namePhotonPlayers.Add(nickName);
-            posePhotonPlayers.Add(pose);
+            posePhotonPlayers.Add(_PosePlayer);
+            poseCloudReference.Add(_PoseCloudReference);
         }
     }
 
