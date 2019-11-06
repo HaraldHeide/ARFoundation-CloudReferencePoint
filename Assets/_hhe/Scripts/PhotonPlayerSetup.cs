@@ -21,35 +21,6 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
         //Message.text = "PhotonPlayerSetup: Start";
 
         _Camera = Camera.main.transform;
-
-        //if (photonView.IsMine)
-        //{
-        //    //Message.text = "PhotonView.IsMine";
-        //    foreach (GameObject gameObject in mePrefabs)
-        //    {
-        //        gameObject.SetActive(true);
-        //    }
-        //    foreach (GameObject gameObject in otherPrefabs)
-        //    {
-        //        gameObject.SetActive(false);
-        //    }
-        //}
-        //else
-        //{
-        //    //Message.text = "PhotonView.NotMine";
-        //    foreach (GameObject gameObject in mePrefabs)
-        //    {
-        //        gameObject.SetActive(false);
-        //    }
-        //    foreach (GameObject gameObject in otherPrefabs)
-        //    {
-        //        gameObject.SetActive(true);
-        //    }
-        //}
-        //if(PlayerName != null)
-        //{
-        //    PlayerName.text = photonView.Owner.NickName;
-        //}
     }
 
     void Update()
@@ -57,6 +28,7 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             #region Sharing my own position
+            // Changing localplayers pose coordinates from being based on ARFoundation Origo to being based on CloudReferencePoint.
             //if (Vector3.Distance(_Camera.position, this.transform.position) > 0.02f)
             {
                 Pose pose1 = new Pose(Vector3.zero, Quaternion.identity); //Local Origo
@@ -80,39 +52,44 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
                 //Find other players.
                 for (int i = 0; i < PhotonPlayersSingleton.Instance.CloudReferencePointId.Length; i++)
                 {
-
+                    //Converting from using other Players (The one to be viewed) localCloudReferenhcePoint as Origo to start using
+                    // this localplayers CloudReferencePoint as Origo for instantiated positioning/rotation. 
                     Pose pose1 = PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose;
                     Pose pose2 = PhotonPlayersSingleton.Instance.poseCloudReference[i];
                     Pose pose3 = PhotonPlayersSingleton.Instance.posePhotonPlayers[i];
                     Pose poseNew = PhotonPlayersSingleton.Instance.GetNewPoseGameObject(pose1, pose2, pose3);
 
-
                     Vector3 position = poseNew.position;
                     Quaternion rotation = poseNew.rotation;
                     string name = PhotonPlayersSingleton.Instance.namePhotonPlayers[i];
 
-                    position = position - (Vector3.up * 10);  //Kun test
+                    //position = position - (Vector3.up * 10);  //Kun test
 
                     GameObject w = GameObject.Find(name);
                     if (w == null)
                     {
-                        //Message.text = "Kilroy 1";
-                        GameObject testPrefab = Instantiate(photonPlayerNamePrefab, position, rotation);
-                        TextMeshPro textMesh = testPrefab.GetComponent<TextMeshPro>();
+                        w = Instantiate(photonPlayerNamePrefab, position, rotation);
+                        Message.text = "testPrefab Name: " + w.name + " Position" + "[" + i + "]: " + position;
+
+                        TextMeshPro textMesh = w.GetComponent<TextMeshPro>();
                         textMesh.text = name;
-                        testPrefab.name = name;
+                        textMesh.name = name;
+                        w.name = name;
+                        //Message.text = "Instantiate Name: " + name + " Position" + "[" + i + "]: " + position;
                     }
                     else
                     {
                         //float step = Time.deltaTime; // calculate distance to move
                         //w.transform.position = Vector3.MoveTowards(transform.position, position, step);
                         //w.transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, step);
+                        //w.transform.Translate(position + Vector3.left);
                         w.transform.position = position;
                         w.transform.rotation =  rotation;
+                        //Message.text = "Name: " + w.name + " Position" + "[" + i + "]: " + position;
                     }
                 }
             }
-            #endregion
+            #endregion Getting other Players position
         }
     }
 
