@@ -75,6 +75,7 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
     //Change coordinate system for Object
     public Pose GetNewPoseGameObject(Pose OriginalOrigoPose, Pose NewOrigo, Pose OriginalGameObjectPose)
     {
+        //OK when NewOrigo rotationy < 0 to > -180
         float x = OriginalGameObjectPose.position.x;
         float y = OriginalGameObjectPose.position.y;
         float z = OriginalGameObjectPose.position.z;
@@ -82,13 +83,18 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
         float h = NewOrigo.position.x - OriginalOrigoPose.position.x;
         float k = NewOrigo.position.z - OriginalOrigoPose.position.z;
 
-        float pDeg = Quaternion.Angle(NewOrigo.rotation, OriginalOrigoPose.rotation);
+        float pDeg = Quaternion.Angle(NewOrigo.rotation, OriginalOrigoPose.rotation);  //Angle always Positive
         float pRad = Mathf.Deg2Rad * pDeg;
+        // Since Quaternion.Angle always gives positive result We must check if angle is negative.
+        if (NewOrigo.rotation.y > OriginalOrigoPose.rotation.y)
+        {
+            pRad *= -1;
+        }
 
         float xNew = (x - h) * Mathf.Cos(pRad) + (z - k) * Mathf.Sin(pRad);
         float zNew = (x - h) * -Mathf.Sin(pRad) + (z - k) * Mathf.Cos(pRad);
 
-        Quaternion quat = OriginalGameObjectPose.rotation * NewOrigo.rotation;
+        Quaternion quat = Quaternion.Inverse(OriginalGameObjectPose.rotation * NewOrigo.rotation);
         Vector3 pos = new Vector3(xNew, y, zNew);
 
         Pose newPose = new Pose(pos, quat);

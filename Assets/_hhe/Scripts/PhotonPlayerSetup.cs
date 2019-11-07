@@ -31,7 +31,7 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
                 Pose pose3 = new Pose(_Camera.position, _Camera.rotation);
                 Pose poseNew = PhotonPlayersSingleton.Instance.GetNewPoseGameObject(pose1, pose2, pose3);
 
-                this.photonView.RPC("Send_My_Position", RpcTarget.OthersBuffered, poseNew.position, poseNew.rotation);
+                this.photonView.RPC("Send_My_Position", RpcTarget.AllBuffered, poseNew.position, poseNew.rotation);
             }
             #endregion
 
