@@ -33,7 +33,6 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
     public List<string> namePhotonPlayers = new List<string>();
     public List<Pose> posePhotonPlayers = new List<Pose>();
-    public List<Pose> poseCloudReference = new List<Pose>();
 
     public void Start()
     {
@@ -42,23 +41,22 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
     private void Update()
     {
-        //Message.text = "PhotonPlayersSingleton: " + CloudReferencePointId;
-        //Message.text = "CloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
-        //Message.text += " CloudReferenceRotation: " + LocalPlayerCloudReferencePose.rotation.eulerAngles;
-        //Message.text += " Count: " + namePhotonPlayers.Count;
+        //Message.text = "CloudReferencePointId: " + CloudReferencePointId;
+        Message.text = "CloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
+        Message.text += " CloudReferenceRotation: " + LocalPlayerCloudReferencePose.rotation.eulerAngles;
+        Message.text += " Count: " + namePhotonPlayers.Count;
 
-        //for (int i = 0; i < namePhotonPlayers.Count; i++)
-        //{
-        //    Message.text += "\nName[" + i + "]: " + namePhotonPlayers[i];
-        //    Message.text += " Pos: " + posePhotonPlayers[i].position;
-        //    Message.text += " Rot: " + posePhotonPlayers[i].rotation.eulerAngles;
-        //}
+        for (int i = 0; i < namePhotonPlayers.Count; i++)
+        {
+            Message.text += "\nName[" + i + "]: " + namePhotonPlayers[i];
+            Message.text += " Pos: " + posePhotonPlayers[i].position;
+            Message.text += " RotY: " + posePhotonPlayers[i].rotation.eulerAngles.y;
+        }
     }
 
-    public void Update_Local_Player_Pose(string nickName, Vector3 _PosPlayer, Quaternion _RotPlayer, Vector3 _PosCloudReference, Quaternion _RotCloudReference)
+    public void Update_Local_Player_Pose(string nickName, Vector3 _PosPlayer, Quaternion _RotPlayer)
     {
         Pose _PosePlayer = new Pose(_PosPlayer, _RotPlayer);
-        Pose _PoseCloudReference = new Pose(_PosCloudReference, _RotCloudReference);
         if (namePhotonPlayers.Contains(nickName))
         {
             int i = namePhotonPlayers.IndexOf(nickName);
@@ -68,14 +66,12 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
         {
             namePhotonPlayers.Add(nickName);
             posePhotonPlayers.Add(_PosePlayer);
-            poseCloudReference.Add(_PoseCloudReference);
         }
     }
 
     //Change coordinate system for Object
     public Pose GetNewPoseGameObject(Pose OriginalOrigoPose, Pose NewOrigo, Pose OriginalGameObjectPose)
     {
-        //OK when NewOrigo rotationy < 0 to > -180
         float x = OriginalGameObjectPose.position.x;
         float y = OriginalGameObjectPose.position.y;
         float z = OriginalGameObjectPose.position.z;
