@@ -16,6 +16,10 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     public GameObject ResolvedPointPrefab;
     private ARReferencePointManager ReferencePointManager;
     private ARRaycastManager RaycastManager;
+
+    private ARPlaneManager planeManager;
+    private ARPointCloudManager pointCloudManager;
+
     private TMP_Text Message;
 
     private enum AppMode
@@ -45,6 +49,9 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     {
         Message = GameObject.Find("Message").GetComponent<TMP_Text>();
 
+        //planeManager = GameObject.Find("Ar Session Origin").GetComponent<ARPlaneManager>();
+        //pointCloudManager = GameObject.Find("Ar Session Origin").GetComponent<ARPointCloudManager>();
+
         ReferencePointManager = GameObject.Find("AR Session Origin").GetComponent<ARReferencePointManager>();
 
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
@@ -56,6 +63,9 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         }
         else
         {
+            //Only MasterClient needs to see the environment interpretation (Points Planes)
+            //VisualizePlanes(false);
+            //VisualizePoints(false);
             Message.text = "";
         }
     }
@@ -85,6 +95,11 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
                         Message.text = "Create Failed!";
                         return;
                     }
+
+                    //Ref point created we can then turn off environment visualization
+                    //VisualizePlanes(false);
+                    //VisualizePoints(false);
+
 
                     // Wait for the reference point to be ready.
                     m_AppMode = AppMode.WaitingForHostedReferencePoint;
@@ -174,6 +189,26 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, m_CloudReferenceId);
+        }
+    }
+    #endregion
+
+    #region Turn on Off Planes and cloudpoints
+    private void VisualizePlanes(bool active)
+    {
+        planeManager.enabled = active;
+        foreach (ARPlane plane in planeManager.trackables)
+        {
+            plane.gameObject.SetActive(active);
+        }
+    }
+
+    private void VisualizePoints(bool active)
+    {
+        pointCloudManager.enabled = active;
+        foreach (ARPointCloud point in pointCloudManager.trackables)
+        {
+            point.gameObject.SetActive(active);
         }
     }
     #endregion

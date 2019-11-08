@@ -12,6 +12,8 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
     private float CheckOthersPositionInterval = 1.0f;
     private float CheckOthersPositionTimer;
 
+    private bool IsUpdating = false;
+
     void Start()
     {
         Message = GameObject.Find("Message").GetComponent<TMP_Text>();
@@ -25,13 +27,16 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
             #region Sharing my own position
             // Changing localplayers pose coordinates from being based on ARFoundation Origo to being based on CloudReferencePoint.
             //if (Vector3.Distance(_Camera.position, this.transform.position) > 0.03f)
+            if(IsUpdating == false)
             {
+                IsUpdating = true;
                 Pose pose1 = new Pose(Vector3.zero, Quaternion.identity); //Local Origo
                 Pose pose2 = PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose; // localCommonCloudReferencePose
                 Pose pose3 = new Pose(_Camera.position, _Camera.rotation);
                 Pose poseNew = PhotonPlayersSingleton.Instance.GetNewPoseGameObject(pose1, pose2, pose3);
 
-                this.photonView.RPC("Send_My_Position", RpcTarget.OthersBuffered, poseNew.position, poseNew.rotation);
+                this.photonView.RPC("Send_My_Position", RpcTarget.AllBuffered, poseNew.position, poseNew.rotation);
+                IsUpdating = false;
             }
             #endregion
 
@@ -41,9 +46,10 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
             //    CheckOthersPositionTimer += Time.deltaTime;
             //}
             //else
+            if (IsUpdating == false)
             {
                 CheckOthersPositionTimer = 0.0f;
-
+                IsUpdating = true;
                 //Find other players.
                 for (int i = 0; i < PhotonPlayersSingleton.Instance.CloudReferencePointId.Length; i++)
                 {
@@ -79,6 +85,7 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
                         //Message.text += "\nw pos" + "[" + i + "]: " + w.transform.position;
                     }
                 }
+                IsUpdating = false;
             }
             #endregion Getting other Players position
         }
