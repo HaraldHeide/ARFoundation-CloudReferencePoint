@@ -2,12 +2,9 @@
 using Google.XR.ARCoreExtensions;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using TMPro;
 using Photon.Pun;
-using System.Collections;
-using System;
 using Photon.Realtime;
 
 public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
@@ -48,12 +45,9 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     void Start()
     {
         Message = GameObject.Find("Message").GetComponent<TMP_Text>();
-
-        //planeManager = GameObject.Find("Ar Session Origin").GetComponent<ARPlaneManager>();
-        //pointCloudManager = GameObject.Find("Ar Session Origin").GetComponent<ARPointCloudManager>();
-
+        planeManager = GameObject.Find("AR Session Origin").GetComponent<ARPlaneManager>();
+        pointCloudManager = GameObject.Find("AR Session Origin").GetComponent<ARPointCloudManager>();
         ReferencePointManager = GameObject.Find("AR Session Origin").GetComponent<ARReferencePointManager>();
-
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             Message.text = "MasterClient - please place common reference point by tapping a plane...  ";
@@ -64,9 +58,11 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         else
         {
             //Only MasterClient needs to see the environment interpretation (Points Planes)
+            //Only Masterclient sets Cloud Reference Point
             //VisualizePlanes(false);
             //VisualizePoints(false);
             Message.text = "";
+            m_AppMode = AppMode.Finished;
         }
     }
 
@@ -96,10 +92,10 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
                         return;
                     }
 
-                    //Ref point created we can then turn off environment visualization
-                    //VisualizePlanes(false);
-                    //VisualizePoints(false);
-
+                    //Ref point created we can now turn off environment visualization
+                    VisualizePlanes(false);
+                    VisualizePoints(false);
+                    Message.text = "";
 
                     // Wait for the reference point to be ready.
                     m_AppMode = AppMode.WaitingForHostedReferencePoint;
@@ -129,7 +125,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         }
         #endregion
 
-        #region Waiting for CloudReferencePointId
+        #region Waiting for CloudReferencePointId   
+        //All other than MasterClient
         else if (m_AppMode == AppMode.ResolveCloudReferencePoint && PhotonPlayersSingleton.Instance.CloudReferencePointId != "" && PhotonPlayersSingleton.Instance.CloudReferencePointId != null)
         {
             //Message.text = "Waiting for cloudrefpoint: " + PhotonPlayersSingleton.Instance.CloudReferencePointId;
@@ -170,6 +167,16 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         #endregion
     }
 
+    #region Photon Callback
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, m_CloudReferenceId);
+        }
+    }
+    #endregion
+
     #region Photon RPC
     [PunRPC]
     void Set_CloudReferenceId(string id)
@@ -183,15 +190,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     }
     #endregion Photon RPC
 
-    #region Photon Callback
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
-        {
-            this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, m_CloudReferenceId);
-        }
-    }
-    #endregion
 
     #region Turn on Off Planes and cloudpoints
     private void VisualizePlanes(bool active)

@@ -17,9 +17,7 @@
  * 
  * 
  */
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using TMPro;
 
@@ -41,17 +39,17 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
     private void Update()
     {
-        //Message.text = "CloudReferencePointId: " + CloudReferencePointId;
-        Message.text = "CloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
-        Message.text += " CloudReferenceRotation: " + LocalPlayerCloudReferencePose.rotation.eulerAngles;
-        Message.text += " Count: " + namePhotonPlayers.Count;
+        ////Message.text = "CloudReferencePointId: " + CloudReferencePointId;
+        //Message.text = "CloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
+        //Message.text += " CloudReferenceRotation: " + LocalPlayerCloudReferencePose.rotation.eulerAngles;
+        //Message.text += " Count: " + namePhotonPlayers.Count;
 
-        for (int i = 0; i < namePhotonPlayers.Count; i++)
-        {
-            Message.text += "\nName[" + i + "]: " + namePhotonPlayers[i];
-            Message.text += " Pos: " + posePhotonPlayers[i].position;
-            Message.text += " RotY: " + posePhotonPlayers[i].rotation.eulerAngles.y;
-        }
+        //for (int i = 0; i < namePhotonPlayers.Count; i++)
+        //{
+        //    Message.text += "\nName[" + i + "]: " + namePhotonPlayers[i];
+        //    Message.text += " Pos: " + posePhotonPlayers[i].position;
+        //    Message.text += " RotY: " + posePhotonPlayers[i].rotation.eulerAngles.y;
+        //}
     }
 
     public void Update_Local_Player_Pose(string nickName, Vector3 _PosPlayer, Quaternion _RotPlayer)
