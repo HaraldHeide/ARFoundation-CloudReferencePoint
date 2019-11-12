@@ -48,6 +48,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         planeManager = GameObject.Find("AR Session Origin").GetComponent<ARPlaneManager>();
         pointCloudManager = GameObject.Find("AR Session Origin").GetComponent<ARPointCloudManager>();
         ReferencePointManager = GameObject.Find("AR Session Origin").GetComponent<ARReferencePointManager>();
+
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             Message.text = "MasterClient - please place common reference point by tapping a plane...  ";
@@ -93,8 +94,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
                     }
 
                     //Ref point created we can now turn off environment visualization
-                    VisualizePlanes(false);
-                    VisualizePoints(false);
+                    //VisualizePlanes(false);
+                    //VisualizePoints(false);
                     Message.text = "";
 
                     // Wait for the reference point to be ready.
@@ -172,7 +173,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, m_CloudReferenceId);
+            this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, PhotonPlayersSingleton.Instance.CloudReferencePointId);
         }
     }
     #endregion
