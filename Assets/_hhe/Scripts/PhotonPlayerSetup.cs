@@ -24,7 +24,6 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine)
         {
-            Message.text = "Photonview not mine";
             return;
         }
         if (IsUpdating == true)
@@ -56,7 +55,7 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
         {
             //CheckOthersPositionTimer = 0.0f;
             //Find other players.
-            for (int i = 0; i < PhotonPlayersSingleton.Instance.CloudReferencePointId.Length; i++)
+            for (int i = 0; i < PhotonPlayersSingleton.Instance.namePhotonPlayers.Count; i++)
             {
                 //Converting from using other Players (The one to be viewed) localCloudReferenhcePoint as Origo to start using
                 // this localplayers CloudReferencePoint as Origo for instantiated positioning/rotation. 
@@ -99,8 +98,7 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
             }
         }
         #endregion Getting other Players position
-        Message.text = "End Updateing";
-
+        Message.text = "End Updating";
         IsUpdating = false;
     } //End Update
 

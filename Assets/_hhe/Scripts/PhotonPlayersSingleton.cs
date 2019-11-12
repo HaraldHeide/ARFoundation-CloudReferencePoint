@@ -1,7 +1,4 @@
 ﻿/*
- * 
- * 
- * Struct
  * Players NickName
  * Pose - Related to CommonCloudReferencePoint
  * (Change coordinate system in Players own local app instance,
@@ -14,7 +11,6 @@
  * 
  * Position must be added to localPlayers own CommonCloudReferencePoint position.
  * Rotation must be multiplied by localPlayers own CommonCloudReferencePoint rotation.
- * 
  * 
  */
 using System.Collections.Generic;
@@ -68,19 +64,19 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
     }
 
     //Change coordinate system for Object
-    public Pose GetNewPoseGameObject(Pose OriginalOrigoPose, Pose NewOrigo, Pose OriginalGameObjectPose)
+    public Pose GetNewPoseGameObject(Pose OriginalOrigo, Pose NewOrigo, Pose OriginalGameObjectPose)
     {
         float x = OriginalGameObjectPose.position.x;
         float y = OriginalGameObjectPose.position.y;
         float z = OriginalGameObjectPose.position.z;
 
-        float h = NewOrigo.position.x - OriginalOrigoPose.position.x;
-        float k = NewOrigo.position.z - OriginalOrigoPose.position.z;
+        float h = NewOrigo.position.x - OriginalOrigo.position.x;
+        float k = NewOrigo.position.z - OriginalOrigo.position.z;
 
-        float pDeg = Quaternion.Angle(NewOrigo.rotation, OriginalOrigoPose.rotation);  //Angle always Positive
+        float pDeg = Quaternion.Angle(NewOrigo.rotation, OriginalOrigo.rotation);  //Angle always Positive
         float pRad = Mathf.Deg2Rad * pDeg;
         // Since Quaternion.Angle always gives positive result We must check if angle is negative.
-        if (NewOrigo.rotation.y > OriginalOrigoPose.rotation.y)
+        if (NewOrigo.rotation.y > OriginalOrigo.rotation.y)
         {
             pRad *= -1;
         }
