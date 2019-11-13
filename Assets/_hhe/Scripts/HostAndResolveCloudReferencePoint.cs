@@ -44,6 +44,11 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         Message = GameObject.Find("Message").GetComponent<TMP_Text>();
         planeManager = GameObject.Find("AR Session Origin").GetComponent<ARPlaneManager>();
         pointCloudManager = GameObject.Find("AR Session Origin").GetComponent<ARPointCloudManager>();
@@ -69,6 +74,11 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 
     void Update()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         #region Hosting Cloud Reference Point
         if (m_AppMode == AppMode.TouchToHostCloudReferencePoint)
         {
@@ -131,7 +141,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         else if (m_AppMode == AppMode.ResolveCloudReferencePoint && PhotonPlayersSingleton.Instance.CloudReferencePointId != "" && PhotonPlayersSingleton.Instance.CloudReferencePointId != null)
         {
             //Message.text = "Waiting for cloudrefpoint: " + PhotonPlayersSingleton.Instance.CloudReferencePointId;
-
 
             m_CloudReferenceId = string.Empty;
 

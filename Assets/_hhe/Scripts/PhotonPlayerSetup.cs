@@ -16,6 +16,11 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         Message = GameObject.Find("Message").GetComponent<TMP_Text>();
         _Camera = Camera.main.transform;
     }
