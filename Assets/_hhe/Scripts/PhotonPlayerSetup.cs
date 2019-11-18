@@ -29,7 +29,7 @@ public class PhotonPlayerSetup : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine)
         {
-            return;
+            //return;
         }
         if (IsUpdating == true)
         {

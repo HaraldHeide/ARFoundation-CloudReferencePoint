@@ -1,7 +1,7 @@
 ﻿/*
  * Used this way:
  * 
- * public class MyAudioController : GenericSingletonClass<MyAudioController>
+ * public class MyXXXClass : GenericSingletonClass<MyAudioController>
  * {
  * 
  * }
