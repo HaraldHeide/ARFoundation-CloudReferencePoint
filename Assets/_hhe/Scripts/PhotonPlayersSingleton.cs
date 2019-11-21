@@ -35,8 +35,8 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
     private void Update()
     {
-        Message.text = "CloudReferencePointId: " + CloudReferencePointId;
-        Message.text += "\nCloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
+        //Message.text = "CloudReferencePointId: " + CloudReferencePointId;
+        //Message.text += "\nCloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
         //Message.text += " CloudReferenceRotation: " + LocalPlayerCloudReferencePose.rotation.eulerAngles;
         //Message.text += " Count: " + namePhotonPlayers.Count;
 

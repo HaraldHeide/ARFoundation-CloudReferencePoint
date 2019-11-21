@@ -19,7 +19,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     private ARPointCloudManager pointCloudManager;
 
     private TMP_Text Message;
-
+    private string messageText = "";
     private enum AppMode
     {
         // Wait for user to tap screen to begin hosting a point.
@@ -39,7 +39,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     }
 
     //private AppMode m_AppMode = AppMode.TouchToHostCloudReferencePoint;
-    private AppMode m_AppMode;
+    private AppMode m_AppMode = AppMode.Finished;
     private ARCloudReferencePoint m_CloudReferencePoint;
     private string m_CloudReferenceId;
 
@@ -47,6 +47,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine)
         {
+            messageText += "!photonView.IsMine";
+            Message.text = messageText;
             return;
         }
 
@@ -68,7 +70,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
             //Only Masterclient sets Cloud Reference Point
             //VisualizePlanes(false);
             //VisualizePoints(false);
-            Message.text = "Start not master";
+            messageText += "Start Not Master - ";
+            Message.text = messageText;
             m_AppMode = AppMode.ResolveCloudReferencePoint;
         }
     }
@@ -83,6 +86,9 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         #region Hosting Cloud Reference Point
         if (m_AppMode == AppMode.TouchToHostCloudReferencePoint)
         {
+            messageText += "A";
+            Message.text = messageText;
+
             if (Input.touchCount >= 1
                 && Input.GetTouch(0).phase == TouchPhase.Began
                 && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
@@ -105,8 +111,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
                     }
 
                     //Ref point created we can now turn off environment visualization
-                    //VisualizePlanes(false);
-                    //VisualizePoints(false);
+                    VisualizePlanes(false);
+                    VisualizePoints(false);
                     // Wait for the reference point to be ready.
                     m_AppMode = AppMode.WaitingForHostedReferencePoint;
                 }
@@ -114,6 +120,10 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         }
         else if (m_AppMode == AppMode.WaitingForHostedReferencePoint)
         {
+            messageText += "B";
+            Message.text = messageText;
+            return;
+
             CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
 
             if (cloudReferenceState == CloudReferenceState.Success)
@@ -138,9 +148,9 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         //All other than MasterClient
         else if (m_AppMode == AppMode.ResolveCloudReferencePoint && PhotonPlayersSingleton.Instance.CloudReferencePointId != "" && PhotonPlayersSingleton.Instance.CloudReferencePointId != null)
         {
-            Message.text = "Waiting for cloudrefpoint: " + PhotonPlayersSingleton.Instance.CloudReferencePointId;
-
-            m_CloudReferenceId = string.Empty;
+            messageText += "C";
+            Message.text = messageText;
+            return;
 
             m_CloudReferencePoint = ReferencePointManager.ResolveCloudReferenceId(PhotonPlayersSingleton.Instance.CloudReferencePointId);
             if (m_CloudReferencePoint == null)
@@ -156,6 +166,11 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         #region Resolving cloudreference point
         else if (m_AppMode == AppMode.WaitingForResolvedReferencePoint)
         {
+            messageText += "D";
+            Message.text = messageText;
+            return;
+
+
             CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
             if (cloudReferenceState == CloudReferenceState.Success)
             {
@@ -179,10 +194,17 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     #region Photon Callback
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        messageText += "E";
+        Message.text = messageText;
+
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
+            messageText += "F";
+            Message.text = messageText;
+
             this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, PhotonPlayersSingleton.Instance.CloudReferencePointId);
         }
+        return;
     }
     #endregion
 
