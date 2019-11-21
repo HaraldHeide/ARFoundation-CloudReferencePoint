@@ -68,17 +68,17 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
             //Only Masterclient sets Cloud Reference Point
             //VisualizePlanes(false);
             //VisualizePoints(false);
-            Message.text = "start not master";
+            Message.text = "Start not master";
             m_AppMode = AppMode.ResolveCloudReferencePoint;
         }
     }
 
     void Update()
     {
-        //if (!photonView.IsMine)
-        //{
-        //    return;
-        //}
+        if (!photonView.IsMine)
+        {
+            return;
+        }
 
         #region Hosting Cloud Reference Point
         if (m_AppMode == AppMode.TouchToHostCloudReferencePoint)
