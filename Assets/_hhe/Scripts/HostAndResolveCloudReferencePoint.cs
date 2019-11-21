@@ -86,9 +86,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         #region Hosting Cloud Reference Point
         if (m_AppMode == AppMode.TouchToHostCloudReferencePoint)
         {
-            messageText += "A";
-            Message.text = messageText;
-
             if (Input.touchCount >= 1
                 && Input.GetTouch(0).phase == TouchPhase.Began
                 && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
@@ -120,10 +117,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         }
         else if (m_AppMode == AppMode.WaitingForHostedReferencePoint)
         {
-            messageText += "B";
-            Message.text = messageText;
-            return;
-
             CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
 
             if (cloudReferenceState == CloudReferenceState.Success)
@@ -144,15 +137,16 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
             }
         }
         #endregion
+
+
         #region Waiting for CloudReferencePointId   
         //All other than MasterClient
         else if (m_AppMode == AppMode.ResolveCloudReferencePoint && PhotonPlayersSingleton.Instance.CloudReferencePointId != "" && PhotonPlayersSingleton.Instance.CloudReferencePointId != null)
         {
-            messageText += "C";
-            Message.text = messageText;
-            return;
+            m_CloudReferencePoint = null;
 
             m_CloudReferencePoint = ReferencePointManager.ResolveCloudReferenceId(PhotonPlayersSingleton.Instance.CloudReferencePointId);
+
             if (m_CloudReferencePoint == null)
             {
                 Message.text = "Resolve Failed!";
@@ -166,11 +160,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         #region Resolving cloudreference point
         else if (m_AppMode == AppMode.WaitingForResolvedReferencePoint)
         {
-            messageText += "D";
-            Message.text = messageText;
-            return;
-
-
             CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
             if (cloudReferenceState == CloudReferenceState.Success)
             {
@@ -184,6 +173,9 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 
                 //m_CloudReferencePoint = null;
 
+                VisualizePlanes(false);
+                VisualizePoints(false);
+
                 Message.text = "Finished!";
                 m_AppMode = AppMode.Finished;
             }
@@ -194,17 +186,10 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     #region Photon Callback
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        messageText += "E";
-        Message.text = messageText;
-
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            messageText += "F";
-            Message.text = messageText;
-
             this.photonView.RPC("Set_CloudReferenceId", RpcTarget.OthersBuffered, PhotonPlayersSingleton.Instance.CloudReferencePointId);
         }
-        return;
     }
     #endregion
 
@@ -212,7 +197,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     [PunRPC]
     void Set_CloudReferenceId(string id)
     {
-        //Message.text = "Refid: " + PhotonPlayersSingleton.Instance.CloudReferencePointId;
         if (PhotonPlayersSingleton.Instance.CloudReferencePointId == "" || PhotonPlayersSingleton.Instance.CloudReferencePointId == null)
         {
             PhotonPlayersSingleton.Instance.CloudReferencePointId = id;
@@ -225,6 +209,10 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     #region Turn on Off Planes and cloudpoints
     private void VisualizePlanes(bool active)
     {
+        if (planeManager == null || planeManager.enabled == active)
+        {
+            return;
+        }
         planeManager.enabled = active;
         foreach (ARPlane plane in planeManager.trackables)
         {
@@ -234,6 +222,10 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 
     private void VisualizePoints(bool active)
     {
+        if(pointCloudManager == null || pointCloudManager.enabled == active)
+        {
+            return;
+        }
         pointCloudManager.enabled = active;
         foreach (ARPointCloud point in pointCloudManager.trackables)
         {
