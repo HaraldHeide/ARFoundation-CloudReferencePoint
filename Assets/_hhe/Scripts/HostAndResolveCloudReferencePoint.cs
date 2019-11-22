@@ -173,8 +173,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 
                 //m_CloudReferencePoint = null;
 
-                VisualizePlanes(false);
-                VisualizePoints(false);
+                //VisualizePlanes(false);
+                //VisualizePoints(false);
 
                 Message.text = "Finished!";
                 m_AppMode = AppMode.Finished;
