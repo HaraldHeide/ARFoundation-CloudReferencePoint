@@ -6,10 +6,11 @@ using UnityEngine.XR.ARFoundation;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections;
 
 public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 {
-    public GameObject HostedPointPrefab;  //Blue sphere
+    //public GameObject HostedPointPrefab;  //Blue sphere
     public GameObject ResolvedPointPrefab;  //Yellow Box
 
     private ARReferencePointManager ReferencePointManager; //Script that uses Red Cylinder
@@ -108,8 +109,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
                     }
 
                     //Ref point created we can now turn off environment visualization
-                    VisualizePlanes(false);
-                    VisualizePoints(false);
+                    StartCoroutine(VisualizePlanes(false));
+                    StartCoroutine(VisualizePoints(false));
                     // Wait for the reference point to be ready.
                     m_AppMode = AppMode.WaitingForHostedReferencePoint;
                 }
@@ -121,8 +122,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 
             if (cloudReferenceState == CloudReferenceState.Success)
             {
-                GameObject cloudAnchor = Instantiate(HostedPointPrefab, Vector3.zero, Quaternion.identity);
-                cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
+                //GameObject cloudAnchor = Instantiate(HostedPointPrefab, Vector3.zero, Quaternion.identity);
+                //cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
 
                 m_CloudReferenceId = m_CloudReferencePoint.cloudReferenceId;  // Getting cloud id to share with Others
 
@@ -159,31 +160,29 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         else if (m_AppMode == AppMode.WaitingForResolvedReferencePoint)
         {
             CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
-            //Message.text = "WaitingForResolvedReferencePoint hhe!";
-            //m_AppMode = AppMode.Finished;
-            //return;
-
             if (cloudReferenceState == CloudReferenceState.Success)
             {
                 Message.text = "CloudReferenceId: " + PhotonPlayersSingleton.Instance.CloudReferencePointId +
                     "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
 
                 GameObject cloudAnchor = Instantiate(ResolvedPointPrefab, Vector3.zero, Quaternion.identity);
-                //cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
+
+                //if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+                {
+                    cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
+                    StartCoroutine(VisualizePlanes(false));
+                    StartCoroutine(VisualizePoints(false));
+                }
 
                 PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose = m_CloudReferencePoint.pose;
-
-                //m_CloudReferencePoint = null;
-
-                //VisualizePlanes(false);
-                //VisualizePoints(false);
-
                 Message.text = "Finished!";
                 m_AppMode = AppMode.Finished;
             }
         }
         #endregion
     }
+
+
 
     #region Photon Callback
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -208,11 +207,12 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     #endregion Photon RPC
 
     #region Turn on Off Planes and cloudpoints
-    private void VisualizePlanes(bool active)
+    private IEnumerator VisualizePlanes(bool active)
     {
+        yield return new WaitForSeconds(2);
         if (planeManager == null)
         {
-            return;
+            yield return null;
         }
         planeManager.enabled = active;
 
@@ -222,11 +222,12 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         }
     }
 
-    private void VisualizePoints(bool active)
+    private IEnumerator VisualizePoints(bool active)
     {
-        if(pointCloudManager == null)
+        yield return new WaitForSeconds(2);
+        if (pointCloudManager == null)
         {
-            return;
+            yield return null;
         }
         pointCloudManager.enabled = active;
         foreach (ARPointCloud point in pointCloudManager.trackables)
