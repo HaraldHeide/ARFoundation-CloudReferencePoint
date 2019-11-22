@@ -9,10 +9,10 @@ using Photon.Realtime;
 
 public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 {
-    public GameObject HostedPointPrefab;
-    public GameObject ResolvedPointPrefab;
+    public GameObject HostedPointPrefab;  //Blue sphere
+    public GameObject ResolvedPointPrefab;  //Yellow Box
 
-    private ARReferencePointManager ReferencePointManager;
+    private ARReferencePointManager ReferencePointManager; //Script that uses Red Cylinder
     private ARRaycastManager RaycastManager;
 
     private ARPlaneManager planeManager;
@@ -144,7 +144,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         else if (m_AppMode == AppMode.ResolveCloudReferencePoint && PhotonPlayersSingleton.Instance.CloudReferencePointId != "" && PhotonPlayersSingleton.Instance.CloudReferencePointId != null)
         {
             m_CloudReferencePoint = null;
-
             m_CloudReferencePoint = ReferencePointManager.ResolveCloudReferenceId(PhotonPlayersSingleton.Instance.CloudReferencePointId);
 
             if (m_CloudReferencePoint == null)
@@ -152,7 +151,6 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
                 Message.text = "Resolve Failed!";
                 return;
             }
-
             m_AppMode = AppMode.WaitingForResolvedReferencePoint;
         }
         #endregion Waiting for CloudReferencePoint
@@ -161,13 +159,17 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         else if (m_AppMode == AppMode.WaitingForResolvedReferencePoint)
         {
             CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
+            //Message.text = "WaitingForResolvedReferencePoint hhe!";
+            //m_AppMode = AppMode.Finished;
+            //return;
+
             if (cloudReferenceState == CloudReferenceState.Success)
             {
                 Message.text = "CloudReferenceId: " + PhotonPlayersSingleton.Instance.CloudReferencePointId +
                     "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
 
                 GameObject cloudAnchor = Instantiate(ResolvedPointPrefab, Vector3.zero, Quaternion.identity);
-                cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
+                //cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
 
                 PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose = m_CloudReferencePoint.pose;
 
@@ -205,15 +207,15 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
     }
     #endregion Photon RPC
 
-
     #region Turn on Off Planes and cloudpoints
     private void VisualizePlanes(bool active)
     {
-        if (planeManager == null || planeManager.enabled == active)
+        if (planeManager == null)
         {
             return;
         }
         planeManager.enabled = active;
+
         foreach (ARPlane plane in planeManager.trackables)
         {
             plane.gameObject.SetActive(active);
@@ -222,7 +224,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 
     private void VisualizePoints(bool active)
     {
-        if(pointCloudManager == null || pointCloudManager.enabled == active)
+        if(pointCloudManager == null)
         {
             return;
         }
