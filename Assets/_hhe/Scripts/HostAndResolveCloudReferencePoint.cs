@@ -167,7 +167,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 
                 GameObject cloudAnchor = Instantiate(ResolvedPointPrefab, Vector3.zero, Quaternion.identity);
 
-                //if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+                //if (PhotonNetwork.LocalPlayer.IsMasterClient)
                 {
                     cloudAnchor.transform.SetParent(m_CloudReferencePoint.transform, false);
                     StartCoroutine(VisualizePlanes(false));
@@ -177,6 +177,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
                 PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose = m_CloudReferencePoint.pose;
                 Message.text = "Finished!";
                 m_AppMode = AppMode.Finished;
+                //GetComponent<HostAndResolveCloudReferencePoint>().
             }
         }
         #endregion
