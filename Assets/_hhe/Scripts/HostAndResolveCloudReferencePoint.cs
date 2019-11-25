@@ -177,7 +177,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
                 PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose = m_CloudReferencePoint.pose;
                 Message.text = "Finished!";
                 m_AppMode = AppMode.Finished;
-                //GetComponent<HostAndResolveCloudReferencePoint>().
+                this.enabled = false;  //
             }
         }
         #endregion
