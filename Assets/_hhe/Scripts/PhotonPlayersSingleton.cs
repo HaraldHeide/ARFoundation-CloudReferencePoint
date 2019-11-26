@@ -25,8 +25,8 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
     public string CloudReferencePointId = "";
     public Pose LocalPlayerCloudReferencePose = new Pose();
 
-    public List<string> namePhotonPlayers = new List<string>();
-    public List<Pose> posePhotonPlayers = new List<Pose>();
+    //public List<string> namePhotonPlayers = new List<string>();
+    //public List<Pose> posePhotonPlayers = new List<Pose>();
 
     public void Start()
     {
@@ -48,20 +48,20 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
         //}
     }
 
-    public void Update_Local_Player_Pose(string nickName, Vector3 _PosPlayer, Quaternion _RotPlayer)
-    {
-        Pose _PosePlayer = new Pose(_PosPlayer, _RotPlayer);
-        if (namePhotonPlayers.Contains(nickName))
-        {
-            int i = namePhotonPlayers.IndexOf(nickName);
-            posePhotonPlayers[i] = _PosePlayer;
-        }
-        else
-        {
-            namePhotonPlayers.Add(nickName);
-            posePhotonPlayers.Add(_PosePlayer);
-        }
-    }
+    //public void Update_Local_Player_Pose(string nickName, Vector3 _PosPlayer, Quaternion _RotPlayer)
+    //{
+    //    Pose _PosePlayer = new Pose(_PosPlayer, _RotPlayer);
+    //    if (namePhotonPlayers.Contains(nickName))
+    //    {
+    //        int i = namePhotonPlayers.IndexOf(nickName);
+    //        posePhotonPlayers[i] = _PosePlayer;
+    //    }
+    //    else
+    //    {
+    //        namePhotonPlayers.Add(nickName);
+    //        posePhotonPlayers.Add(_PosePlayer);
+    //    }
+    //}
 
     //Change coordinate system for Object
     public Pose GetNewPoseGameObject(Pose OriginalOrigo, Pose NewOrigo, Pose OriginalGameObjectPose)
