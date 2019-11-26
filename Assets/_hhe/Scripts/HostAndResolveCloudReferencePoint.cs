@@ -140,11 +140,10 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         }
         #endregion AppMode.WaitingForHostedReferencePoint
 
-<<<<<<< HEAD
         #region Waiting for CloudReferencePointId   
-=======
+
         #region AppMode.ResolveCloudReferencePoint
->>>>>>> c6c8c5f3c4b5c92e14e956ea1b5f7a47c2765e71
+
         //All other than MasterClient
         else if (m_AppMode == AppMode.ResolveCloudReferencePoint && PhotonPlayersSingleton.Instance.CloudReferencePointId != "" && PhotonPlayersSingleton.Instance.CloudReferencePointId != null)
         {
@@ -191,13 +190,11 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
             }
         }
         #endregion Resolving cloudreference point
-=======
                 Message.text = "Mode: AppMode.Finished";
                 //this.enabled = false;  //
             }
         }
         #endregion AppMode.WaitingForResolvedReferencePoint
->>>>>>> c6c8c5f3c4b5c92e14e956ea1b5f7a47c2765e71
     }
 
     #region Photon Callback
