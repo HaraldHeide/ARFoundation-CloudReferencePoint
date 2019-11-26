@@ -25,8 +25,8 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
     public string CloudReferencePointId = "";
     public Pose LocalPlayerCloudReferencePose = new Pose();
 
-    public List<string> namePhotonPlayers = new List<string>();
-    public List<Pose> posePhotonPlayers = new List<Pose>();
+    //public List<string> namePhotonPlayers = new List<string>();
+    //public List<Pose> posePhotonPlayers = new List<Pose>();
 
     public void Start()
     {
@@ -35,33 +35,33 @@ public class PhotonPlayersSingleton : GenericSingletonClass<PhotonPlayersSinglet
 
     private void Update()
     {
-        Message.text = "CloudReferencePointId: " + CloudReferencePointId;
-        Message.text += "\nCloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
-        Message.text += " CloudReferenceRotation: " + LocalPlayerCloudReferencePose.rotation.eulerAngles;
-        Message.text += " Count: " + namePhotonPlayers.Count;
+        //Message.text = "CloudReferencePointId: " + CloudReferencePointId;
+        //Message.text += "\nCloudReferencePosition: " + LocalPlayerCloudReferencePose.position;
+        //Message.text += " CloudReferenceRotation: " + LocalPlayerCloudReferencePose.rotation.eulerAngles;
+        //Message.text += " Count: " + namePhotonPlayers.Count;
 
-        for (int i = 0; i < namePhotonPlayers.Count; i++)
-        {
-            Message.text += "\nName[" + i + "]: " + namePhotonPlayers[i];
-            Message.text += " Pos: " + posePhotonPlayers[i].position;
-            Message.text += " RotY: " + posePhotonPlayers[i].rotation.eulerAngles.y;
-        }
+        //for (int i = 0; i < namePhotonPlayers.Count; i++)
+        //{
+        //    Message.text += "\nName[" + i + "]: " + namePhotonPlayers[i];
+        //    Message.text += " Pos: " + posePhotonPlayers[i].position;
+        //    Message.text += " RotY: " + posePhotonPlayers[i].rotation.eulerAngles.y;
+        //}
     }
 
-    public void Update_Local_Player_Pose(string nickName, Vector3 _PosPlayer, Quaternion _RotPlayer)
-    {
-        Pose _PosePlayer = new Pose(_PosPlayer, _RotPlayer);
-        if (namePhotonPlayers.Contains(nickName))
-        {
-            int i = namePhotonPlayers.IndexOf(nickName);
-            posePhotonPlayers[i] = _PosePlayer;
-        }
-        else
-        {
-            namePhotonPlayers.Add(nickName);
-            posePhotonPlayers.Add(_PosePlayer);
-        }
-    }
+    //public void Update_Local_Player_Pose(string nickName, Vector3 _PosPlayer, Quaternion _RotPlayer)
+    //{
+    //    Pose _PosePlayer = new Pose(_PosPlayer, _RotPlayer);
+    //    if (namePhotonPlayers.Contains(nickName))
+    //    {
+    //        int i = namePhotonPlayers.IndexOf(nickName);
+    //        posePhotonPlayers[i] = _PosePlayer;
+    //    }
+    //    else
+    //    {
+    //        namePhotonPlayers.Add(nickName);
+    //        posePhotonPlayers.Add(_PosePlayer);
+    //    }
+    //}
 
     //Change coordinate system for Object
     public Pose GetNewPoseGameObject(Pose OriginalOrigo, Pose NewOrigo, Pose OriginalGameObjectPose)

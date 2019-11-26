@@ -6,6 +6,7 @@ using TMPro;
 
 public class ARPositionPlayerSync : MonoBehaviour, IPunObservable
 {
+    private TMP_Text Message;
 
     private PhotonView photonView;
 
@@ -14,7 +15,7 @@ public class ARPositionPlayerSync : MonoBehaviour, IPunObservable
 
     TextMeshPro textMesh;
 
-    string myName = "";
+    //string myName = "";
 
     Vector3 networkedLocalPos;
     Quaternion networkedLocalRot;
@@ -35,18 +36,24 @@ public class ARPositionPlayerSync : MonoBehaviour, IPunObservable
 
     void Start()
     {
-        if(photonView.IsMine)
+        Message = GameObject.Find("Message").GetComponent<TMP_Text>();
+
+        if (photonView.IsMine)
         {
             localCamera = Camera.main.transform;
-            myName = PhotonNetwork.LocalPlayer.NickName;
+
             poseLocalCloudRef = PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose;
+
+            Message.text = PhotonNetwork.LocalPlayer.NickName;
+            textMesh.text = "";
         }
         else  // Local View
         {
             remoteCamera = Camera.main.transform;
             poseRemoteCloudRef = PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose;
+            Message.text = PhotonNetwork.LocalPlayer.NickName;
+            textMesh.text = PhotonNetwork.LocalPlayer.NickName;
         }
-        textMesh.text = myName;
     }
 
     void Update()

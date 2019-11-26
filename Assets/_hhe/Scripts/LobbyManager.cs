@@ -99,5 +99,4 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         yield return new WaitForSeconds(1f);
     }
-
 }
