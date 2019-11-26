@@ -140,10 +140,7 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
         }
         #endregion AppMode.WaitingForHostedReferencePoint
 
-        #region Waiting for CloudReferencePointId   
-
         #region AppMode.ResolveCloudReferencePoint
-
         //All other than MasterClient
         else if (m_AppMode == AppMode.ResolveCloudReferencePoint && PhotonPlayersSingleton.Instance.CloudReferencePointId != "" && PhotonPlayersSingleton.Instance.CloudReferencePointId != null)
         {
@@ -167,11 +164,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
             CloudReferenceState cloudReferenceState = m_CloudReferencePoint.cloudReferenceState;
             if (cloudReferenceState == CloudReferenceState.Success)
             {
-<<<<<<< HEAD
-                Message.text = "xCloudReferenceId: " + PhotonPlayersSingleton.Instance.CloudReferencePointId +
-=======
+
                 Message.text = "XCloudReferenceId: " + PhotonPlayersSingleton.Instance.CloudReferencePointId +
->>>>>>> c6c8c5f3c4b5c92e14e956ea1b5f7a47c2765e71
                     "\nCloudReferencePoint position: " + m_CloudReferencePoint.transform.position.ToString();
 
                 GameObject cloudAnchor = Instantiate(ResolvedPointPrefab, Vector3.zero, Quaternion.identity);
@@ -185,12 +179,8 @@ public class HostAndResolveCloudReferencePoint : MonoBehaviourPunCallbacks
 
                 PhotonPlayersSingleton.Instance.LocalPlayerCloudReferencePose = m_CloudReferencePoint.pose;
                 m_AppMode = AppMode.Finished;
-<<<<<<< HEAD
-                //this.enabled = false;  //
-            }
-        }
-        #endregion Resolving cloudreference point
                 Message.text = "Mode: AppMode.Finished";
+
                 //this.enabled = false;  //
             }
         }
